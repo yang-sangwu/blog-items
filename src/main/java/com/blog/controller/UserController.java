@@ -29,6 +29,12 @@ public class UserController {
         return "hello!";
     }
 
+//    @PostMapping("/login")
+//    public ResponseResult login(@RequestBody User user) {
+//        //登录
+//        return loginServcie.login(user);
+//    }
+
 //    @ApiOperation(value = "login")
 //    @PostMapping("/login")
 //    @ResponseBody

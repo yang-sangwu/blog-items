@@ -37,7 +37,7 @@ public class SwaggerConfig {
     }
 
     private Contact contact() {
-        return new Contact("yaya", "https://.net/", "1583267416@qq.com");
+        return new Contact("yaya", "https:/yangsaiya/.net/", "2728771838@qq.com");
     }
 
 }
