@@ -37,4 +37,12 @@ mybatis-plus:
 blog:
   path: /Users/a1002/Downloads/blog/img/
 
+jwt:
+  route:
+    authentication:
+      path: /login
+  #  header: Authorization
+  header: token
+  expiration: 604800
+  secret: Authorization
 

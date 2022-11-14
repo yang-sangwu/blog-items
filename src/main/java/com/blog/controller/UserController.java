@@ -1,8 +1,11 @@
 package com.blog.controller;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.blog.pojo.User;
 import com.blog.service.UserService;
+import com.blog.utils.MailUtils;
 import com.blog.utils.R;
+import com.blog.utils.ValidateCodeUtils;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
@@ -10,6 +13,8 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * @author a1002
@@ -17,75 +22,57 @@ import javax.annotation.Resource;
 @Api(tags = "manager")
 @Slf4j
 @RestController
-@RequestMapping("/user")
+//@RequestMapping("/user")
 public class UserController {
     @Resource
     private UserService userService;
-
-    @ApiOperation(value = "test")
-    @GetMapping("/test")
-    @ResponseBody
-    public String test() {
-        return "hello!";
-    }
-
-//    @PostMapping("/login")
-//    public ResponseResult login(@RequestBody User user) {
-//        //登录
-//        return loginServcie.login(user);
-//    }
-
-//    @ApiOperation(value = "login")
-//    @PostMapping("/login")
-//    @ResponseBody
-//    public R login(String username, String password) {
-//        //获取当前用户
-//        Subject subject = SecurityUtils.getSubject();
-//        //封装用户的登陆数据
-//        UsernamePasswordToken token = new UsernamePasswordToken(username, password);
-//        try {
-//            subject.login(token);//执行登陆方法，如果没有异常就说明OK了
-//            return R.success("success");
-//        } catch (UnknownAccountException e) {//用户名不存在
-//            return R.error("用户名错误");
-//        } catch (IncorrectCredentialsException e) {
-//            return R.error("密码错误");
-//        }
-//    }
-
-    @ApiOperation(value = "增加")
-    @PostMapping("/save")
-    @ResponseBody
-    public R save(User user) {
-        userService.save(user);
-        return R.success("success");
-    }
 
     @ApiOperation(value = "修改用户")
     @PutMapping("/update")
     @Transactional(rollbackFor = Exception.class)
     @ResponseBody
-    public R update(@RequestBody User user) {
-        userService.updateById(user);
+    public R update(Long id, String username, String password, String img, String blogPath, String grade) {
+        userService.updateByID(id, username, password, img, blogPath, grade);
         return R.success("success");
     }
 
     @ApiOperation(value = "删除用户")
-    @DeleteMapping("/delete")
+    @DeleteMapping("/delete/{id}")
     @Transactional(rollbackFor = Exception.class)
     @ResponseBody
-    public R delete(Long id) {
+    public R delete(@PathVariable Long id) {
         userService.removeById(id);
         return R.success("success");
     }
 
     @ApiOperation(value = "根据id查询用户")
-    @DeleteMapping("/findUserById")
+    @GetMapping("/findUserById/{id}")
     @ResponseBody
-    public R findUserById(Long id) {
-        userService.getById(id);
-        return R.success("success");
+    public R findUserById(@PathVariable Long id) {
+        return R.success(userService.getById(id));
     }
 
+    @ApiOperation(value = "发送验证码")
+    @PostMapping("/sendMail")
+    @ResponseBody
+    public R sendMail(String mail) throws Exception {
+        String code = ValidateCodeUtils.generateValidateCode4String(4);
+        MailUtils.sendMail(mail, code);
+        return R.success("发送成功！");
+
+    }
+
+    @PostMapping("/status/{status}")
+    public R status(@PathVariable Integer status, @RequestParam List<Long> ids) {
+        LambdaQueryWrapper<User> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.in(User::getId, ids);
+        List<User> list = userService.list(queryWrapper);
+        List<User> list1 = list.stream().map((item) -> {
+            item.setStatus(status);
+            return item;
+        }).collect(Collectors.toList());
+        userService.updateBatchById(list1);
+        return R.success(list1);
+    }
 
 }
