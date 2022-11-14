@@ -19,7 +19,7 @@ import java.util.stream.Collectors;
 /**
  * @author a1002
  */
-@Api(tags = "manager")
+@Api(tags = "user")
 @Slf4j
 @RestController
 //@RequestMapping("/user")
@@ -37,18 +37,18 @@ public class UserController {
     }
 
     @ApiOperation(value = "删除用户")
-    @DeleteMapping("/delete/{id}")
+    @DeleteMapping("/delete")
     @Transactional(rollbackFor = Exception.class)
     @ResponseBody
-    public R delete(@PathVariable Long id) {
+    public R delete(Long id) {
         userService.removeById(id);
         return R.success("success");
     }
 
     @ApiOperation(value = "根据id查询用户")
-    @GetMapping("/findUserById/{id}")
+    @GetMapping("/findUserById")
     @ResponseBody
-    public R findUserById(@PathVariable Long id) {
+    public R findUserById(Long id) {
         return R.success(userService.getById(id));
     }
 
@@ -62,8 +62,10 @@ public class UserController {
 
     }
 
-    @PostMapping("/status/{status}")
-    public R status(@PathVariable Integer status, @RequestParam List<Long> ids) {
+    @ApiOperation(value = "修改用户权限")
+    @ResponseBody
+    @PostMapping("/status")
+    public R status(Integer status, @RequestParam List<Long> ids) {
         LambdaQueryWrapper<User> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.in(User::getId, ids);
         List<User> list = userService.list(queryWrapper);

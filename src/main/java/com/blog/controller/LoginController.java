@@ -4,8 +4,10 @@ import com.blog.pojo.JwtUser;
 import com.blog.service.LoginServcie;
 import com.blog.service.UserService;
 import com.blog.utils.R;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import io.swagger.annotations.*;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
+import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -85,8 +87,6 @@ public class LoginController {
     @ApiOperation(value = "注销用户")
     @ResponseBody
     @GetMapping("/logout")
-    @ApiModelProperty(hidden = true)
-    @JsonIgnore
     public void logout(HttpSession session) {
         session.invalidate();
         System.out.println("logout执行了...");

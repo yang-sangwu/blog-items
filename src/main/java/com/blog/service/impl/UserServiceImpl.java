@@ -41,6 +41,6 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         userService.removeById(id);
         User user = new User(id, username, password, img, blogPath, grade);
         userService.save(user);
-        return null;
+        return R.success("success");
     }
 }

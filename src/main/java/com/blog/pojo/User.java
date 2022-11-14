@@ -70,4 +70,14 @@ public class User implements Serializable {
         this.blogPath = blogPath;
         this.grade = grade;
     }
+
+    public User(Long id, String username, String password, String blogPath, String grade) {
+        this.id = id;
+        this.username = username;
+        this.password = password;
+        this.blogPath = blogPath;
+        this.grade = grade;
+    }
+
+
 }
