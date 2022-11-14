@@ -12,4 +12,8 @@ public interface UserService extends IService<User> {
     User findByUsername(String username);
 
     R updateByID(Long id, String username, String password, String img, String blogPath, String grade);
+
+    R list(int page, int size, String name);
+
+    R listByGrade(int page, int size, String grade);
 }

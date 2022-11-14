@@ -1,12 +1,14 @@
 package com.blog.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.blog.mapper.UserMapper;
 import com.blog.pojo.User;
 import com.blog.service.UserService;
 import com.blog.utils.R;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.util.Objects;
@@ -35,6 +37,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     }
 
     @Override
+    @Transactional
     public R updateByID(Long id, String username, String password, String img, String blogPath, String grade) {
         LambdaQueryWrapper<User> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.eq(User::getId, id);
@@ -42,5 +45,26 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         User user = new User(id, username, password, img, blogPath, grade);
         userService.save(user);
         return R.success("success");
+    }
+
+    @Override
+    public R list(int page, int size, String name) {
+        Page<User> pageInfo = new Page<>(page, size);
+        LambdaQueryWrapper<User> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.like(name != null, User::getUsername, name);
+        queryWrapper.orderByDesc(User::getUpdateTime);
+        userService.page(pageInfo, queryWrapper);
+
+        return R.success(pageInfo);
+    }
+
+    @Override
+    public R listByGrade(int page, int size, String grade) {
+        Page<User> pageInfo = new Page<>(page, size);
+        LambdaQueryWrapper<User> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(grade != null, User::getGrade, grade);
+        queryWrapper.orderByDesc(User::getUpdateTime);
+        userService.page(pageInfo, queryWrapper);
+        return R.success(pageInfo);
     }
 }

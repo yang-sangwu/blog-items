@@ -9,6 +9,8 @@ import com.blog.utils.ValidateCodeUtils;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
@@ -31,6 +33,7 @@ public class UserController {
     @PutMapping("/update")
     @Transactional(rollbackFor = Exception.class)
     @ResponseBody
+    @CacheEvict(value = "userCache", allEntries = true)
     public R update(Long id, String username, String password, String img, String blogPath, String grade) {
         userService.updateByID(id, username, password, img, blogPath, grade);
         return R.success("success");
@@ -40,6 +43,7 @@ public class UserController {
     @DeleteMapping("/delete")
     @Transactional(rollbackFor = Exception.class)
     @ResponseBody
+    @CacheEvict(value = "userCache", key = "#id")
     public R delete(Long id) {
         userService.removeById(id);
         return R.success("success");
@@ -48,6 +52,7 @@ public class UserController {
     @ApiOperation(value = "根据id查询用户")
     @GetMapping("/findUserById")
     @ResponseBody
+    @CachePut(value = "userCache", key = "#id")
     public R findUserById(Long id) {
         return R.success(userService.getById(id));
     }
@@ -65,6 +70,7 @@ public class UserController {
     @ApiOperation(value = "修改用户权限")
     @ResponseBody
     @PostMapping("/status")
+    @CacheEvict(value = "userCache", allEntries = true)
     public R status(Integer status, @RequestParam List<Long> ids) {
         LambdaQueryWrapper<User> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.in(User::getId, ids);
@@ -75,6 +81,20 @@ public class UserController {
         }).collect(Collectors.toList());
         userService.updateBatchById(list1);
         return R.success(list1);
+    }
+
+    @ApiOperation(value = "分页查询用户")
+    @ResponseBody
+    @PostMapping("/findUserByPage")
+    public R list(int page, int size, String name) {
+        return userService.list(page, size, name);
+    }
+
+    @ApiOperation(value = "根据年级分页查询用户")
+    @ResponseBody
+    @PostMapping("/findUserByPageGrade")
+    public R list1(int page, int size, String grade) {
+        return userService.listByGrade(page, size, grade);
     }
 
 }

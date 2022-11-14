@@ -9,6 +9,7 @@ import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -46,6 +47,7 @@ public class LoginController {
             @ApiImplicitParam(name = "password", value = "密码", required = true)
     })
     @ResponseBody
+    @CacheEvict(value = "userCache", allEntries = true)
     public R register(String admin, String password) {
         return loginServcie.register(admin, password);
     }
