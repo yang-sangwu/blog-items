@@ -17,6 +17,12 @@
 
     <dependencies>
 
+        <!--websocket-->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-websocket</artifactId>
+            <version>2.7.2</version>
+        </dependency>
         <!--jwt依赖-->
         <dependency>
             <groupId>io.jsonwebtoken</groupId>
