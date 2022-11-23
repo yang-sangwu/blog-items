@@ -52,7 +52,7 @@ public class MinioController {
     @ResponseBody
     @GetMapping("/minioDownload")
     public String download(String path, HttpServletResponse res) {
-        minIoUtil.download("test", path, res);
+        minIoUtil.download(path, res);
         return "success";
     }
 

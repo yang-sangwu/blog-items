@@ -143,12 +143,11 @@ public class MinIoUtil {
     /**
      * 文件下载
      *
-     * @param bucketName 存储bucket名称
-     * @param fileName   文件名称
-     * @param res        response
+     * @param fileName 文件名称
+     * @param res      response
      * @return Boolean
      */
-    public void download(String bucketName, String fileName, HttpServletResponse res) {
+    public void download(String fileName, HttpServletResponse res) {
         GetObjectArgs objectArgs = GetObjectArgs.builder().bucket(bucketName)
                 .object(fileName).build();
         try (GetObjectResponse response = minioClient.getObject(objectArgs)) {
