@@ -12,11 +12,16 @@ spring:
       url: jdbc:mysql://110.40.210.213:3306/blog?serverTimezone=Asia/Shanghai&useUnicode=true&characterEncoding=utf-8&zeroDateTimeBehavior=convertToNull&useSSL=false&allowPublicKeyRetrieval=true
       username: blog
       password: Bx377zJimRwSywyL
-#  redis:
-#      host: 110.40.210.213
-#      port: 6379
-#      password: YSY@20031018
-#      timeout: 2000
+  #  redis:
+  #      host: 110.40.210.213
+  #      port: 6379
+  #      password: YSY@20031018
+  #      timeout: 2000
+
+  servlet:
+    multipart:
+      max-file-size: 100MB
+      max-request-size: 100MB
 
 mybatis-plus:
   configuration:
@@ -45,4 +50,11 @@ jwt:
   header: token
   expiration: 604800
   secret: Authorization
+
+# minio 参数配置
+minio:
+  endpoint: http://110.40.210.213:9000
+  accessKey: minioadmin
+  secretKey: minioadmin
+  bucketName: yang-test
 
